@@ -12,7 +12,7 @@ print( data_column_max  )
 # 获取矩阵中每一行最大索引值的位置
 index = data.argmax( axis = 1 )
 # 获取矩阵中每一行最大索引值的位置获取每一行最大值
-print([ range(data.shape[0]),index ])
+# print([ range(data.shape[0]),index ])
 data_row_max = data[range( data.shape[0]),index ]
 print( data_row_max )
 
