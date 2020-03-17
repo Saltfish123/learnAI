@@ -80,3 +80,72 @@ print( row_index_83_age )
 row_index_766_pclass = titanic_survival.loc[766,"Pclass"]
 print( row_index_766_pclass )
 
+'''
+07 新索引reset_index 
+'''
+# 通过年龄建立新的降序排列
+new_titanic_survival = titanic_survival.sort_values("Age",ascending=False)
+# 创建新的索引
+titanic_reindex = new_titanic_survival.reset_index(drop=True)
+print( titanic_reindex.head(10) )
+
+'''
+08 自定义函数apply应用
+'''
+# 创建函数返回第100行数据
+def hundredth_row( column ):
+    hundredth_item = column.loc[99]
+    return hundredth_item
+
+hundredth_data = titanic_survival.apply( hundredth_row )
+print( hundredth_data )
+
+# 统计所有字段缺失值个数
+def field_is_count( column ):
+
+    is_null = pd.isnull( column )
+
+    null = column[ is_null ]
+
+    return len( null )
+
+all_field_count = titanic_survival.apply( field_is_count,axis=0)
+print("*-------------------*")
+print( all_field_count )
+#对各等级船舱进行离散化处理
+def which_class( row ):
+
+    pclass = row["Pclass"]
+
+    if pd.isnull( pclass  ):
+        return "Unknow"
+    if pclass == 1:
+        return "First Pclass"
+    elif pclass == 2:
+        return "Second Pclass"
+    else:
+        return "Third Pclass"
+
+classes = titanic_survival.apply(which_class,axis=1)
+print( classes )
+# 计算各等级船舱获救人数的平均值
+titanic_survival["classes"] = classes
+pclass_surival = titanic_survival.pivot_table( index="classes",values="Survived",aggfunc=np.mean )
+print( passenger_survival )
+
+# 对年龄进行离散化处理
+def which_age( column ):
+    age = column["Age"]
+    if pd.isnull( age ):
+        return "Unknow"
+    elif age < 18:
+        return "Minor"
+    else:
+        return "Adult"
+age_labels = titanic_survival.apply( which_age, axis=1)
+# 计算各年龄段所在各船舱话费钱的总额
+titanic_survival["age_labels"] = age_labels
+pay_sum_money = titanic_survival.pivot_table(index="age_labels",values=["Fare"],aggfunc=np.sum )
+print( pay_sum_money )
+
+
